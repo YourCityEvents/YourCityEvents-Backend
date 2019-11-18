@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using YourCityEventsApi.Model;
@@ -22,9 +23,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<List<UserModel>>> Get()
         {
             List<UserModel> userList= _userService.Get();
+            var data=new Dictionary<string,List<UserModel>>();
+            data.Add("users",userList);
             if (userList != null)
             {
-                return new ResponseModel<List<UserModel>>(userList);
+                return new ResponseModel<List<UserModel>>(data);
             }
 
             return new ResponseModel<List<UserModel>>(null, "false", new[] {"Unable to get models"});
@@ -35,9 +38,11 @@ namespace YourCityEventsApi.Controllers
         {
             string token = Authorization.Split()[1];
             UserModel user = _userService.Get(token);
+            var data=new Dictionary<string,UserModel>();
+            data.Add("user",user);
             if (user != null)
             {
-                return new ResponseModel<UserModel>(user);
+                return new ResponseModel<UserModel>(data);
             }
             
             return new ResponseModel<UserModel>(null, "false", new[] {"User not found"});
@@ -48,9 +53,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<UserModel>> GetById(string id)
         {
             var user = _userService.GetById(id);
+            var data=new Dictionary<string,UserModel>();
+            data.Add("user",user);
             if (user != null)
             {
-                return new ResponseModel<UserModel>(user);
+                return new ResponseModel<UserModel>(data);
             }
             
             return new ResponseModel<UserModel>(null, "false", new[] {"User not found"});
@@ -61,9 +68,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<List<EventModel>>> GetHostingEvents(string id)
         {
             List<EventModel> eventList=  _userService.GetHostingEvents(id);
+            var data=new Dictionary<string,List<EventModel>>();
+            data.Add("events",eventList);
             if (eventList != null)
             {
-                return new ResponseModel<List<EventModel>>(eventList);
+                return new ResponseModel<List<EventModel>>(data);
             }
             
             return new ResponseModel<List<EventModel>>(null, "false", new[] {"Unable to get events"});
@@ -74,9 +83,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<List<EventModel>>> GetVisitingEvents(string id)
         {
             List<EventModel> eventList=_userService.GetVisitingEvents(id);
+            var data=new Dictionary<string,List<EventModel>>();
+            data.Add("events",eventList);
             if (eventList != null)
             {
-                return new ResponseModel<List<EventModel>>(eventList);
+                return new ResponseModel<List<EventModel>>(data);
             }
             
             return new ResponseModel<List<EventModel>>(null, "false", new[] {"Unable to get events"});
@@ -86,9 +97,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<UserModel>> Create(UserModel userModel)
         {
             UserModel user= _userService.Create(userModel);
+            var data=new Dictionary<string,UserModel>();
+            data.Add("user",userModel);
             if (user != null)
             {
-                return new ResponseModel<UserModel>(user);
+                return new ResponseModel<UserModel>(data);
             }
             
             return new ResponseModel<UserModel>(null, "false", new[] {"Unable to create user"});
@@ -97,14 +110,45 @@ namespace YourCityEventsApi.Controllers
         [HttpPut("{id}")]
         public ActionResult<ResponseModel<UserModel>> Update(string id,UserModel userModel)
         {
-            var user = _userService.Get(id);
+            var user = _userService.GetById(id);
+            var data=new Dictionary<string,UserModel>();
+            data.Add("user",userModel);
             if (user != null)
             {
                 _userService.Update(id,userModel);
-                return new ResponseModel<UserModel>(userModel);
+                return new ResponseModel<UserModel>(data);
             }
             
             return new ResponseModel<UserModel>(null, "false", new[] {"Unable to find user for updating"});
+        }
+
+        [HttpPut("change_password")]
+        public ActionResult<ResponseModel<string>> ChangePassword([FromHeader] string Authorization
+        ,ChangePasswordRequest request)
+        {
+            string token = Authorization.Split()[1];
+            bool result = _userService.ChangePassword(token, request.Password,request.NewPassword);
+
+            if (result)
+            {
+                return new ResponseModel<string>(null, "Ok");
+            }
+
+            return new ResponseModel<string>(null,"false",new []{"Wrong password"});
+        }
+        
+        [HttpPut("change_email")]
+        public ActionResult<ResponseModel<string>> ChangeEmail([FromHeader] string Authorization
+        ,ChangeEmailRequest request)
+        {
+            string token = Authorization.Split()[1];
+            bool result = _userService.ChangeEmail(token,request.Password,request.NewEmail); 
+            if (result)
+            {
+                return new ResponseModel<string>(null, "Ok");
+            }
+
+            return new ResponseModel<string>(null,"false",new []{"Wrong password"});
         }
         
         [HttpDelete("{id}")]

@@ -25,9 +25,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<List<EventModel>>> Get()
         {
            List<EventModel> eventList = _eventService.Get();
+           var data=new Dictionary<string,List<EventModel>>();
+           data.Add("events",eventList);
            if (eventList != null)
            {
-               return new ResponseModel<List<EventModel>>(eventList);
+               return new ResponseModel<List<EventModel>>(data);
            }
 
            return new ResponseModel<List<EventModel>>(null, "false", new[] {"Unable to get events"});
@@ -37,9 +39,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<EventModel>> Get(string id)
         {
             EventModel Event = _eventService.Get(id);
+            var data=new Dictionary<string,EventModel>();
+            data.Add("event",Event);
             if (Event != null)
             {
-                return new ResponseModel<EventModel>(Event);
+                return new ResponseModel<EventModel>(data);
             }
             
             return new ResponseModel<EventModel>(null, "false", new[] {"Event not found"});
@@ -49,9 +53,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<List<UserModel>>> GetVisitors(string id)
         {
            List<UserModel> userList= _eventService.GetVisitors(id);
+           var data=new Dictionary<string,List<UserModel>>();
+           data.Add("users",userList);
            if (userList != null)
            {
-               return new ResponseModel<List<UserModel>>(userList, "true");
+               return new ResponseModel<List<UserModel>>(data);
            }
            
            return new ResponseModel<List<UserModel>>(null, "false", new[] {"Unable to get users"});
@@ -61,9 +67,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<EventModel>> Create(EventModel eventModel)
         {
             EventModel Event = _eventService.Create(eventModel);
+            var data=new Dictionary<string,EventModel>();
+            data.Add("event",Event);
             if (Event != null)
             {
-                return new ResponseModel<EventModel>(Event);
+                return new ResponseModel<EventModel>(data);
             }
             
             return new ResponseModel<EventModel>(null, "false", new[] {"Unable to create event"});
@@ -74,10 +82,12 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<EventModel>> Update(string id, EventModel eventModel)
         {
             EventModel Event = _eventService.Get(id);
+            var data=new Dictionary<string,EventModel>();
+            data.Add("event",eventModel);
             if (Event != null)
             {
                 _eventService.Update(id,eventModel);
-                return new ResponseModel<EventModel> (eventModel);
+                return new ResponseModel<EventModel> (data);
             }
             
             return new ResponseModel<EventModel>(null, "false", new[] {"Unable to find event for updating"});

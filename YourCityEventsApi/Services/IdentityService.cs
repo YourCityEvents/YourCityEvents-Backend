@@ -16,8 +16,7 @@ namespace YourCityEventsApi.Services
     {
 
         private readonly UserService _userService;
-        private readonly JwtSettings _jwtSettings;
-        
+
         public IdentityService(UserService userService)
         {
             _userService=userService;
@@ -88,6 +87,5 @@ namespace YourCityEventsApi.Services
             
             return GenerateAuthenticationResult(user);
         }
-
     }
 }

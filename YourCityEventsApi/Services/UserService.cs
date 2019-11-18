@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
@@ -77,5 +78,32 @@ namespace YourCityEventsApi.Services
         
         public void Delete(string id) =>
             _users.DeleteOne(user => user.Id == id);
+
+        public bool ChangeEmail(string token,string password, string newEmail)
+        {
+            UserModel user = Get(token);
+
+            if (user.Password == password)
+            {
+                user.Email = newEmail;
+                Update(user.Id,user);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool ChangePassword(string token,string password, string newPassword)
+        {
+            UserModel user = Get(token);
+            if (user.Password == password)
+            {
+                user.Password=newPassword;
+                Update(user.Id,user);
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -4,6 +4,7 @@ using YourCityEventsApi.Services;
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
+using MongoDB.Bson.Serialization.Attributes;
 using YourCityEventsApi.Model;
 
 namespace YourCityEventsApi.Controllers
@@ -24,9 +25,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<List<CityModel>>> Get()
         {
             List<CityModel> cityList = _cityService.Get();
+            var data=new Dictionary<string,List<CityModel>>();
+            data.Add("cities",cityList);
             if (cityList != null)
             {
-                return new ResponseModel<List<CityModel>>(cityList);
+                return new ResponseModel<List<CityModel>>(data);
             }
 
             return new ResponseModel<List<CityModel>>(null, "false", new[] {"Unable to get models"});
@@ -36,9 +39,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<CityModel>> Get(string id)
         {
             CityModel city = _cityService.Get(id);
+            var data = new Dictionary<string, CityModel>();
+            data.Add("city",city);
             if (city != null)
             {
-                return new ResponseModel<CityModel>(city);
+                return new ResponseModel<CityModel>(data);
             }
             
             return new ResponseModel<CityModel>(null,"false",new[]{"City not found"});
@@ -48,9 +53,11 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<CityModel>> Create(CityModel cityModel)
         {
              CityModel city = _cityService.Create(cityModel);
+             var data=new Dictionary<string,CityModel>();
+             data.Add("city",city);
              if (city != null)
              {
-                 return new ResponseModel<CityModel> (city);
+                 return new ResponseModel<CityModel> (data);
              }
              
              return new ResponseModel<CityModel>(null,"false",new[]{"Unable to create city"});
@@ -60,10 +67,12 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<CityModel>> Update(string id,CityModel cityModel)
         {
             var city = _cityService.Get(id);
+            var data=new Dictionary<string,CityModel>();
+            data.Add("city",city);
             if (city != null)
             {
                 _cityService.Update(id, cityModel);
-                return new ResponseModel<CityModel>(cityModel);
+                return new ResponseModel<CityModel>(data);
             }
 
             return new ResponseModel<CityModel>(null, "false", new[] {"Unable to find city for updating"});
