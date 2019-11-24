@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
@@ -22,7 +23,7 @@ namespace YourCityEventsApi.Model
         public string Description { get; set; }
         
         [BsonElement("owner")]
-        public string Owner { get; set; }
+        public UserModel Owner { get; set; }
         
         [BsonElement("date")]
         public DateTime Date { get; set; }
@@ -34,13 +35,13 @@ namespace YourCityEventsApi.Model
         public string[] Links { get; set; }
         
         [BsonElement("visitors")]
-        public string[] Visitors { get; set; }
+        public UserModel[] Visitors { get; set; }
         
         [BsonElement("price")]
         public long Price { get; set; }
 
-        public EventModel(string id, string title, CityModel location, string description, string owner
-        ,DateTime date, long price,string[] imageUrls = null,string[] links=null, string[] visitors=null)
+        public EventModel(string id, string title, CityModel location, string description, UserModel owner
+        ,DateTime date, long price,string[] imageUrls = null,string[] links=null, UserModel[] visitors=null)
         {
             Id = id;
             Title = title;

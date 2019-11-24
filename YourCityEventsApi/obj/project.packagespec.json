@@ -44,6 +44,18 @@
           "target": "Package",
           "version": "[2.2.0, )"
         },
+        "Microsoft.Azure.ConfigurationManager": {
+          "target": "Package",
+          "version": "[4.0.0, )"
+        },
+        "Microsoft.Azure.Storage.Common": {
+          "target": "Package",
+          "version": "[11.1.1, )"
+        },
+        "Microsoft.Azure.Storage.File": {
+          "target": "Package",
+          "version": "[11.1.1, )"
+        },
         "Microsoft.NETCore.App": {
           "suppressParent": "All",
           "target": "Package",
@@ -61,6 +73,10 @@
         "Swashbuckle.Swagger": {
           "target": "Package",
           "version": "[6.0.0-beta902, )"
+        },
+        "System.Drawing.Common": {
+          "target": "Package",
+          "version": "[4.7.0-preview3.19551.4, )"
         }
       },
       "imports": [

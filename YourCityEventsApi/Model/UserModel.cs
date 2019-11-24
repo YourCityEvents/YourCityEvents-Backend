@@ -1,6 +1,9 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Rewrite.Internal.PatternSegments;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.ExpressionTranslators.Internal;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -27,6 +30,7 @@ namespace YourCityEventsApi.Model
         [BsonElement("bio")]
         public string Bio { get; set; }
         
+        [EmailAddress]
         [BsonElement("email")]
         public string Email { get; set; }
         
@@ -34,20 +38,21 @@ namespace YourCityEventsApi.Model
         public CityModel City { get; set; }
 
         [BsonElement("hosting_events")]
-        public string[] HostingEvents { get; set; }
+        public EventModel[] HostingEvents { get; set; }
         
         [BsonElement("visiting_events")]
-        public string[] VisitingEvents { get; set; }
+        public EventModel[] VisitingEvents { get; set; }
 
         [BsonElement("image_url")]
         public string ImageUrl { get; set; }
         
+        [JsonIgnore]
         [BsonElement("token")]
         public string Token { get; set; }
 
         public UserModel(string id, string email,string password,string firstName
-            , string lastName, CityModel city,string[] hostingEvents=null
-            , string[] visitingEvents=null, string imageUrl=null,string bio=null
+            , string lastName, CityModel city,EventModel[] hostingEvents=null
+            , EventModel[] visitingEvents=null, string imageUrl=null,string bio=null
             ,string token=null)
         {
             Id = id;
@@ -55,7 +60,7 @@ namespace YourCityEventsApi.Model
             FirstName = firstName;
             LastName = lastName;
             Bio = bio;
-            Email = email;
+            Email = email.ToLower();
             City = city;
             HostingEvents = hostingEvents;
             VisitingEvents = visitingEvents;

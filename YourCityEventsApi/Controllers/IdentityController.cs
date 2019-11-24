@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using YourCityEventsApi.Model;
@@ -28,17 +30,17 @@ namespace YourCityEventsApi.Controllers
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage));
-                return new ResponseModel<string>(null,"false",errors);
+                return new ResponseModel<string>(null,false,errors);
             }
 
-            var authResponse = _identityService.Register(request.Email, request.Password, request.FirstName
+            var authResponse = _identityService.Register(request.Email.ToLower(), request.Password, request.FirstName
                 , request.LastName, request.City);
             
-            _userService.AddUserToken(request.Email,authResponse.Token);
+            _userService.AddUserToken(request.Email.ToLower(),authResponse.Token);
             
             if (!authResponse.Success)
             {
-                return new ResponseModel<string>(null,"false",authResponse.Errors);
+                return new ResponseModel<string>(null,false,authResponse.Errors);
 
             }
             
@@ -51,13 +53,13 @@ namespace YourCityEventsApi.Controllers
         [HttpPost("login")]
         public ActionResult<ResponseModel<string>> Login(UserLoginRequest request)
         {
-            var authResponse = _identityService.Login(request.Email, request.Password);
+            var authResponse = _identityService.Login(request.Email.ToLower(), request.Password);
 
-            _userService.AddUserToken(request.Email,authResponse.Token);
+            _userService.AddUserToken(request.Email.ToLower(),authResponse.Token);
             
             if (!authResponse.Success)
             {
-                return new ResponseModel<string>(null,"false",authResponse.Errors);
+                return new ResponseModel<string>(null,false,authResponse.Errors);
 
             }
             
@@ -66,6 +68,8 @@ namespace YourCityEventsApi.Controllers
 
             return new ResponseModel<string>(data);
         }
+
+        
     }
     
 }

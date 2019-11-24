@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using YourCityEventsApi.Model;
-
+using System.Drawing;
+using Microsoft.AspNetCore.Hosting;
 
 namespace YourCityEventsApi.Services
 {
@@ -12,13 +17,15 @@ namespace YourCityEventsApi.Services
     {
         private IMongoCollection<UserModel> _users;
         private IMongoCollection<EventModel> _events;
+        private readonly IHostingEnvironment _hostingEnvironment;
         
-        public UserService(IDatabaseSettings settings)
+        public UserService(IDatabaseSettings settings,IHostingEnvironment hostingEnvironment)
         {
             var client=new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
             _users = database.GetCollection<UserModel>("Users");
             _events = database.GetCollection<EventModel>("Events");
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public List<UserModel> Get()
@@ -42,10 +49,7 @@ namespace YourCityEventsApi.Services
         {
             List<EventModel> eventList = new List<EventModel>();
             var user = GetById(id);
-            foreach (var event_id in user.HostingEvents)
-            {
-                eventList.Add(_events.Find(e=>e.Id==event_id).FirstOrDefault());
-            }
+            eventList = user.HostingEvents.ToList();
             return eventList;
         }
         
@@ -53,10 +57,7 @@ namespace YourCityEventsApi.Services
         {
             List<EventModel> eventList = new List<EventModel>();
             var user = GetById(id);
-            foreach (var eventId in user.VisitingEvents)
-            {
-                eventList.Add(_events.Find(e=>e.Id==eventId).FirstOrDefault());
-            }
+            eventList = user.VisitingEvents.ToList();
             return eventList;
         }
         
@@ -73,11 +74,61 @@ namespace YourCityEventsApi.Services
             return GetByEmail(userModel.Email);
         }
 
-        public void Update(string id, UserModel userModel) =>
+        public void Update(string id, UserModel userModel)
+        {
+            var events = _events.Find(e => true).ToList().ToArray();
+
+            for (int i = 0; i < events.Length; i++)
+            {
+                if (events[i].Owner.Id == id)
+                {
+                    events[i].Owner = userModel;
+                }
+
+                if (events[i].Visitors != null)
+                {
+                    for (int j = 0; j < events[i].Visitors.Length; j++)
+                    {
+                        if (events[i].Visitors[j].Id == id)
+                        {
+                            events[i].Visitors[j] = userModel;
+                        }
+                    }
+                }
+                
+                _events.ReplaceOne(e => e.Id == events[i].Id, events[i]);
+            }
+
             _users.ReplaceOne(user => user.Id == id, userModel);
-        
-        public void Delete(string id) =>
+        }
+
+        public string UploadImage(string token, UploadImageModel imageModel)
+        {
+            var userId = Get(token).Id;
+            var memoryStream = new MemoryStream(imageModel.Array);
+            var image = Image.FromStream(memoryStream);
+            var wwwrootPath = _hostingEnvironment.WebRootPath;
+            var directoryPath ="/images/"+userId+".jpg";
+            image.Save(wwwrootPath+directoryPath);
+            return "yourcityevents.azurewebsites.net"+directoryPath;
+        }
+
+        public void Delete(string id)
+        {
+            var events = _events.Find(e => true).ToList();
+            foreach (var e in events)
+            {
+                if (e.Owner.Id == id)
+                {
+                    _events.DeleteOne(ev => ev.Id == e.Id);
+                    break;
+                }
+
+                e.Visitors = e.Visitors.Where(visitor => visitor.Id != id).ToArray();
+                _events.ReplaceOne(ev => ev.Id == e.Id, e);
+            }
             _users.DeleteOne(user => user.Id == id);
+        }
 
         public bool ChangeEmail(string token,string password, string newEmail)
         {

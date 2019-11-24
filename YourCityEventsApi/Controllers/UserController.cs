@@ -22,7 +22,7 @@ namespace YourCityEventsApi.Controllers
         [HttpGet("all")]
         public ActionResult<ResponseModel<List<UserModel>>> Get()
         {
-            List<UserModel> userList= _userService.Get();
+            var userList= _userService.Get();
             var data=new Dictionary<string,List<UserModel>>();
             data.Add("users",userList);
             if (userList != null)
@@ -30,14 +30,14 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<List<UserModel>>(data);
             }
 
-            return new ResponseModel<List<UserModel>>(null, "false", new[] {"Unable to get models"});
+            return new ResponseModel<List<UserModel>>(null, false, new[] {"Unable to get models"});
         }
 
         [HttpGet]
         public ActionResult<ResponseModel<UserModel>> Get([FromHeader] string Authorization)
         {
             string token = Authorization.Split()[1];
-            UserModel user = _userService.Get(token);
+            var user = _userService.Get(token);
             var data=new Dictionary<string,UserModel>();
             data.Add("user",user);
             if (user != null)
@@ -45,7 +45,7 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<UserModel>(data);
             }
             
-            return new ResponseModel<UserModel>(null, "false", new[] {"User not found"});
+            return new ResponseModel<UserModel>(null, false, new[] {"User not found"});
 
         }
 
@@ -60,14 +60,14 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<UserModel>(data);
             }
             
-            return new ResponseModel<UserModel>(null, "false", new[] {"User not found"});
+            return new ResponseModel<UserModel>(null, false, new[] {"User not found"});
 
         }
 
         [HttpGet("{id}/hostingEvents")]
         public ActionResult<ResponseModel<List<EventModel>>> GetHostingEvents(string id)
         {
-            List<EventModel> eventList=  _userService.GetHostingEvents(id);
+            var eventList=  _userService.GetHostingEvents(id);
             var data=new Dictionary<string,List<EventModel>>();
             data.Add("events",eventList);
             if (eventList != null)
@@ -75,14 +75,14 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<List<EventModel>>(data);
             }
             
-            return new ResponseModel<List<EventModel>>(null, "false", new[] {"Unable to get events"});
+            return new ResponseModel<List<EventModel>>(null, false, new[] {"Unable to get events"});
 
         }
 
         [HttpGet("{id}/visitingEvents")]
         public ActionResult<ResponseModel<List<EventModel>>> GetVisitingEvents(string id)
         {
-            List<EventModel> eventList=_userService.GetVisitingEvents(id);
+            var eventList=_userService.GetVisitingEvents(id);
             var data=new Dictionary<string,List<EventModel>>();
             data.Add("events",eventList);
             if (eventList != null)
@@ -90,13 +90,13 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<List<EventModel>>(data);
             }
             
-            return new ResponseModel<List<EventModel>>(null, "false", new[] {"Unable to get events"});
+            return new ResponseModel<List<EventModel>>(null, false, new[] {"Unable to get events"});
         }
 
         [HttpPost]
         public ActionResult<ResponseModel<UserModel>> Create(UserModel userModel)
         {
-            UserModel user= _userService.Create(userModel);
+            var user= _userService.Create(userModel);
             var data=new Dictionary<string,UserModel>();
             data.Add("user",userModel);
             if (user != null)
@@ -104,7 +104,7 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<UserModel>(data);
             }
             
-            return new ResponseModel<UserModel>(null, "false", new[] {"Unable to create user"});
+            return new ResponseModel<UserModel>(null, false, new[] {"Unable to create user"});
         }
         
         [HttpPut("{id}")]
@@ -119,7 +119,7 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<UserModel>(data);
             }
             
-            return new ResponseModel<UserModel>(null, "false", new[] {"Unable to find user for updating"});
+            return new ResponseModel<UserModel>(null, false, new[] {"Unable to find user for updating"});
         }
 
         [HttpPut("change_password")]
@@ -131,10 +131,10 @@ namespace YourCityEventsApi.Controllers
 
             if (result)
             {
-                return new ResponseModel<string>(null, "Ok");
+                return new ResponseModel<string>(null);
             }
 
-            return new ResponseModel<string>(null,"false",new []{"Wrong password"});
+            return new ResponseModel<string>(null,false,new []{"Wrong password"});
         }
         
         [HttpPut("change_email")]
@@ -145,10 +145,27 @@ namespace YourCityEventsApi.Controllers
             bool result = _userService.ChangeEmail(token,request.Password,request.NewEmail); 
             if (result)
             {
-                return new ResponseModel<string>(null, "Ok");
+                return new ResponseModel<string>(null);
             }
 
-            return new ResponseModel<string>(null,"false",new []{"Wrong password"});
+            return new ResponseModel<string>(null,false,new []{"Wrong password"});
+        }
+
+        [HttpPut("upload_image")]
+        public ActionResult<ResponseModel<string>> UploadImage([FromHeader] string Authorization
+        ,UploadImageModel imageModel)
+        {
+            string token = Authorization.Split()[1];
+            string path = _userService.UploadImage(token, imageModel);
+            var data=new Dictionary<string,string>();
+            data.Add("path",path);
+            
+            if (path != null)
+            {
+                return new ResponseModel<string>(data);
+            }
+
+            return new ResponseModel<string>(null, false, new[] {"Unable to upload image"});
         }
         
         [HttpDelete("{id}")]
@@ -158,10 +175,10 @@ namespace YourCityEventsApi.Controllers
             if (user != null)
             {
                 _userService.Delete(id);
-                return new ResponseModel<string>(null, "Ok");
+                return new ResponseModel<string>(null);
             }
 
-            return new ResponseModel<string>(null, "false", new[] {"Unable to find user for deleting"});
+            return new ResponseModel<string>(null, false, new[] {"Unable to find user for deleting"});
         }
     }
 }

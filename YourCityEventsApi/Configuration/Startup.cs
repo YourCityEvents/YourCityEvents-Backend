@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml.Schema;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -75,6 +77,7 @@ namespace YourCityEventsApi
             services.AddSingleton<EventService>();
             services.AddSingleton<CityService>();
             services.AddScoped<IdentityService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +102,22 @@ namespace YourCityEventsApi
                 option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
             });
 
+            app.UseStaticFiles();
+            
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")),
+                RequestPath = "/images"
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")),
+                RequestPath = "/images"
+            });
+            
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();

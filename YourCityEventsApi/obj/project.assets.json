@@ -1587,6 +1587,55 @@
           "lib/netstandard2.0/Microsoft.AspNetCore.WebUtilities.dll": {}
         }
       },
+      "Microsoft.Azure.ConfigurationManager/4.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net452/Microsoft.Azure.ConfigurationManager.dll": {}
+        },
+        "runtime": {
+          "lib/net452/Microsoft.Azure.ConfigurationManager.dll": {}
+        }
+      },
+      "Microsoft.Azure.KeyVault.Core/2.0.4": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.1.0",
+          "System.Threading.Tasks": "4.0.11"
+        },
+        "compile": {
+          "lib/netstandard1.5/Microsoft.Azure.KeyVault.Core.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.5/Microsoft.Azure.KeyVault.Core.dll": {}
+        }
+      },
+      "Microsoft.Azure.Storage.Common/11.1.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Azure.KeyVault.Core": "2.0.4",
+          "NETStandard.Library": "2.0.1",
+          "Newtonsoft.Json": "10.0.2"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.Azure.Storage.Common.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Azure.Storage.Common.dll": {}
+        }
+      },
+      "Microsoft.Azure.Storage.File/11.1.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Azure.Storage.Common": "11.1.1",
+          "NETStandard.Library": "2.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.Azure.Storage.File.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Azure.Storage.File.dll": {}
+        }
+      },
       "Microsoft.CodeAnalysis.Analyzers/1.1.0": {
         "type": "package"
       },
@@ -2700,7 +2749,7 @@
           "Microsoft.NETCore.DotNetAppHost": "2.2.0"
         }
       },
-      "Microsoft.NETCore.Platforms/2.2.0": {
+      "Microsoft.NETCore.Platforms/3.1.0-preview3.19551.4": {
         "type": "package",
         "compile": {
           "lib/netstandard1.0/_._": {}
@@ -2756,6 +2805,24 @@
             "rid": "unix"
           },
           "runtimes/win/lib/netstandard2.0/Microsoft.Win32.Registry.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
+        }
+      },
+      "Microsoft.Win32.SystemEvents/4.7.0-preview3.19551.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "3.1.0-preview3.19551.4"
+        },
+        "compile": {
+          "ref/netstandard2.0/_._": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Win32.SystemEvents.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netcoreapp2.0/Microsoft.Win32.SystemEvents.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -3553,6 +3620,29 @@
         },
         "compile": {
           "ref/netstandard1.5/System.Diagnostics.Tracing.dll": {}
+        }
+      },
+      "System.Drawing.Common/4.7.0-preview3.19551.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "3.1.0-preview3.19551.4",
+          "Microsoft.Win32.SystemEvents": "4.7.0-preview3.19551.4"
+        },
+        "compile": {
+          "ref/netstandard2.0/System.Drawing.Common.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Drawing.Common.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netcoreapp2.0/System.Drawing.Common.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netcoreapp2.0/System.Drawing.Common.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
         }
       },
       "System.Dynamic.Runtime/4.3.0": {
@@ -6246,6 +6336,67 @@
         "microsoft.aspnetcore.webutilities.nuspec"
       ]
     },
+    "Microsoft.Azure.ConfigurationManager/4.0.0": {
+      "sha512": "uqvJr0b7/C6LwxKBJpl5I+13ihjbFQSx5tcsR6LUEufKCPOzV4buxCJwZEEx4PGniwvwjY5xylx8kABjp/EsRw==",
+      "type": "package",
+      "path": "microsoft.azure.configurationmanager/4.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net452/Microsoft.Azure.ConfigurationManager.dll",
+        "lib/net452/Microsoft.Azure.ConfigurationManager.runtimeconfig.json",
+        "lib/net452/Microsoft.Azure.ConfigurationManager.xml",
+        "microsoft.azure.configurationmanager.4.0.0.nupkg.sha512",
+        "microsoft.azure.configurationmanager.nuspec"
+      ]
+    },
+    "Microsoft.Azure.KeyVault.Core/2.0.4": {
+      "sha512": "BSdPbmZ1BvptdfgECniezEwfQLAyT11MsOm4btXdswjIm8BkLK9eX//yO8ExlafErJg1tAKpCxfNyLTHSlXJvA==",
+      "type": "package",
+      "path": "microsoft.azure.keyvault.core/2.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/Microsoft.Azure.KeyVault.Core.dll",
+        "lib/netstandard1.5/Microsoft.Azure.KeyVault.Core.dll",
+        "microsoft.azure.keyvault.core.2.0.4.nupkg.sha512",
+        "microsoft.azure.keyvault.core.nuspec"
+      ]
+    },
+    "Microsoft.Azure.Storage.Common/11.1.1": {
+      "sha512": "qIveCnEP+upXcK7uJL0z2xhErN6vkmYlxLPG5tdODWqOCXVXRNit/esAYP+6PJkArVLQPJpvQ1v3f+tGFWTfuA==",
+      "type": "package",
+      "path": "microsoft.azure.storage.common/11.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net452/Microsoft.Azure.Storage.Common.dll",
+        "lib/net452/Microsoft.Azure.Storage.Common.xml",
+        "lib/netstandard1.3/Microsoft.Azure.Storage.Common.dll",
+        "lib/netstandard1.3/Microsoft.Azure.Storage.Common.xml",
+        "lib/netstandard2.0/Microsoft.Azure.Storage.Common.dll",
+        "lib/netstandard2.0/Microsoft.Azure.Storage.Common.xml",
+        "microsoft.azure.storage.common.11.1.1.nupkg.sha512",
+        "microsoft.azure.storage.common.nuspec"
+      ]
+    },
+    "Microsoft.Azure.Storage.File/11.1.1": {
+      "sha512": "G6tMArJNxIqhi2sLmC70YoOG/hXMoJmzC1qWplng1/nrcR5NhmCLp6JVqg2rrcrlJpnm0ZIpM4ALALDkp5/Gdg==",
+      "type": "package",
+      "path": "microsoft.azure.storage.file/11.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net452/Microsoft.Azure.Storage.File.dll",
+        "lib/net452/Microsoft.Azure.Storage.File.xml",
+        "lib/netstandard1.3/Microsoft.Azure.Storage.File.dll",
+        "lib/netstandard1.3/Microsoft.Azure.Storage.File.xml",
+        "lib/netstandard2.0/Microsoft.Azure.Storage.File.dll",
+        "lib/netstandard2.0/Microsoft.Azure.Storage.File.xml",
+        "microsoft.azure.storage.file.11.1.1.nupkg.sha512",
+        "microsoft.azure.storage.file.nuspec"
+      ]
+    },
     "Microsoft.CodeAnalysis.Analyzers/1.1.0": {
       "sha512": "HS3iRWZKcUw/8eZ/08GXKY2Bn7xNzQPzf8gRPHGSowX7u7XXu9i9YEaBeBNKUXWfI7qjvT2zXtLUvbN0hds8vg==",
       "type": "package",
@@ -7667,17 +7818,17 @@
         "runtime.json"
       ]
     },
-    "Microsoft.NETCore.Platforms/2.2.0": {
-      "sha512": "T/J+XZo+YheFTJh8/4uoeJDdz5qOmOMkjg6/VL8mHJ9AnP8+fmV/kcbxeXsob0irRNiChf+V0ig1MCRLp/+Kog==",
+    "Microsoft.NETCore.Platforms/3.1.0-preview3.19551.4": {
+      "sha512": "Clr2Jue6oyBlnsVf9g5qjoi06+QDYVq+U32buU9W+mRYeIFg4LXeJei1q6P/1niiKX8WIVo7KbBnqW80jVcOvw==",
       "type": "package",
-      "path": "microsoft.netcore.platforms/2.2.0",
+      "path": "microsoft.netcore.platforms/3.1.0-preview3.19551.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
         "lib/netstandard1.0/_._",
-        "microsoft.netcore.platforms.2.2.0.nupkg.sha512",
+        "microsoft.netcore.platforms.3.1.0-preview3.19551.4.nupkg.sha512",
         "microsoft.netcore.platforms.nuspec",
         "runtime.json",
         "useSharedDesignerContext.txt",
@@ -7790,6 +7941,35 @@
         "runtimes/win/lib/net461/Microsoft.Win32.Registry.dll",
         "runtimes/win/lib/netstandard1.3/Microsoft.Win32.Registry.dll",
         "runtimes/win/lib/netstandard2.0/Microsoft.Win32.Registry.dll",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "Microsoft.Win32.SystemEvents/4.7.0-preview3.19551.4": {
+      "sha512": "agmxXP9/xsxB6MCGXW6lMKUCe/gmsLYKRSxIUIA7WjjDM4qWzopxZ5ekQzn9qnG37mPh2U5O0yVpPZ3Pfwf7Dg==",
+      "type": "package",
+      "path": "microsoft.win32.systemevents/4.7.0-preview3.19551.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/Microsoft.Win32.SystemEvents.dll",
+        "lib/net461/Microsoft.Win32.SystemEvents.xml",
+        "lib/netstandard2.0/Microsoft.Win32.SystemEvents.dll",
+        "lib/netstandard2.0/Microsoft.Win32.SystemEvents.xml",
+        "microsoft.win32.systemevents.4.7.0-preview3.19551.4.nupkg.sha512",
+        "microsoft.win32.systemevents.nuspec",
+        "ref/net461/Microsoft.Win32.SystemEvents.dll",
+        "ref/net461/Microsoft.Win32.SystemEvents.xml",
+        "ref/net472/Microsoft.Win32.SystemEvents.dll",
+        "ref/net472/Microsoft.Win32.SystemEvents.xml",
+        "ref/netstandard2.0/Microsoft.Win32.SystemEvents.dll",
+        "ref/netstandard2.0/Microsoft.Win32.SystemEvents.xml",
+        "runtimes/win/lib/netcoreapp2.0/Microsoft.Win32.SystemEvents.dll",
+        "runtimes/win/lib/netcoreapp2.0/Microsoft.Win32.SystemEvents.xml",
+        "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.dll",
+        "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.xml",
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
@@ -9591,6 +9771,45 @@
         "ref/xamarinwatchos10/_._",
         "system.diagnostics.tracing.4.3.0.nupkg.sha512",
         "system.diagnostics.tracing.nuspec"
+      ]
+    },
+    "System.Drawing.Common/4.7.0-preview3.19551.4": {
+      "sha512": "g5ObAYPAwcFKYOsAvRpiEX8++ox1oXnZcFCHkwCPKyjf3zcHercHSsiWfdGCxwMwOwoj/PF3G9D2iKu+df35Mw==",
+      "type": "package",
+      "path": "system.drawing.common/4.7.0-preview3.19551.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net461/System.Drawing.Common.dll",
+        "lib/netstandard2.0/System.Drawing.Common.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net461/System.Drawing.Common.dll",
+        "ref/netcoreapp3.0/System.Drawing.Common.dll",
+        "ref/netcoreapp3.0/System.Drawing.Common.xml",
+        "ref/netstandard2.0/System.Drawing.Common.dll",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "runtimes/unix/lib/netcoreapp2.0/System.Drawing.Common.dll",
+        "runtimes/unix/lib/netcoreapp3.0/System.Drawing.Common.dll",
+        "runtimes/unix/lib/netcoreapp3.0/System.Drawing.Common.xml",
+        "runtimes/win/lib/netcoreapp2.0/System.Drawing.Common.dll",
+        "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll",
+        "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.xml",
+        "system.drawing.common.4.7.0-preview3.19551.4.nupkg.sha512",
+        "system.drawing.common.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     },
     "System.Dynamic.Runtime/4.3.0": {
@@ -13270,10 +13489,14 @@
       "DotNetTools >= 0.0.2",
       "Microsoft.AspNetCore.App >= 2.2.0",
       "Microsoft.AspNetCore.Razor.Design >= 2.2.0",
+      "Microsoft.Azure.ConfigurationManager >= 4.0.0",
+      "Microsoft.Azure.Storage.Common >= 11.1.1",
+      "Microsoft.Azure.Storage.File >= 11.1.1",
       "Microsoft.NETCore.App >= 2.2.0",
       "MongoDB.Driver >= 2.9.2",
       "Swashbuckle.AspNetCore >= 5.0.0-rc4",
-      "Swashbuckle.Swagger >= 6.0.0-beta902"
+      "Swashbuckle.Swagger >= 6.0.0-beta902",
+      "System.Drawing.Common >= 4.7.0-preview3.19551.4"
     ]
   },
   "packageFolders": {
@@ -13330,6 +13553,18 @@
             "target": "Package",
             "version": "[2.2.0, )"
           },
+          "Microsoft.Azure.ConfigurationManager": {
+            "target": "Package",
+            "version": "[4.0.0, )"
+          },
+          "Microsoft.Azure.Storage.Common": {
+            "target": "Package",
+            "version": "[11.1.1, )"
+          },
+          "Microsoft.Azure.Storage.File": {
+            "target": "Package",
+            "version": "[11.1.1, )"
+          },
           "Microsoft.NETCore.App": {
             "suppressParent": "All",
             "target": "Package",
@@ -13347,6 +13582,10 @@
           "Swashbuckle.Swagger": {
             "target": "Package",
             "version": "[6.0.0-beta902, )"
+          },
+          "System.Drawing.Common": {
+            "target": "Package",
+            "version": "[4.7.0-preview3.19551.4, )"
           }
         },
         "imports": [
@@ -13364,6 +13603,16 @@
       "warningLevel": 1,
       "message": "Package 'DotNetTools 0.0.2' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.2'. This package may not be fully compatible with your project.",
       "libraryId": "DotNetTools",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v2.2"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.Azure.ConfigurationManager 4.0.0' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.2'. This package may not be fully compatible with your project.",
+      "libraryId": "Microsoft.Azure.ConfigurationManager",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.2"
       ]

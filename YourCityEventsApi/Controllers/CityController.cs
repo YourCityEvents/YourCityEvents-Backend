@@ -24,7 +24,7 @@ namespace YourCityEventsApi.Controllers
         [HttpGet]
         public ActionResult<ResponseModel<List<CityModel>>> Get()
         {
-            List<CityModel> cityList = _cityService.Get();
+            var cityList = _cityService.Get();
             var data=new Dictionary<string,List<CityModel>>();
             data.Add("cities",cityList);
             if (cityList != null)
@@ -32,13 +32,13 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<List<CityModel>>(data);
             }
 
-            return new ResponseModel<List<CityModel>>(null, "false", new[] {"Unable to get models"});
+            return new ResponseModel<List<CityModel>>(null, false, new[] {"Unable to get models"});
         }
 
         [HttpGet("{id}")]
         public ActionResult<ResponseModel<CityModel>> Get(string id)
         {
-            CityModel city = _cityService.Get(id);
+            var city = _cityService.Get(id);
             var data = new Dictionary<string, CityModel>();
             data.Add("city",city);
             if (city != null)
@@ -46,13 +46,13 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<CityModel>(data);
             }
             
-            return new ResponseModel<CityModel>(null,"false",new[]{"City not found"});
+            return new ResponseModel<CityModel>(null,false,new[]{"City not found"});
         }
 
         [HttpPost]
         public ActionResult<ResponseModel<CityModel>> Create(CityModel cityModel)
         {
-             CityModel city = _cityService.Create(cityModel);
+             var city = _cityService.Create(cityModel);
              var data=new Dictionary<string,CityModel>();
              data.Add("city",city);
              if (city != null)
@@ -60,7 +60,7 @@ namespace YourCityEventsApi.Controllers
                  return new ResponseModel<CityModel> (data);
              }
              
-             return new ResponseModel<CityModel>(null,"false",new[]{"Unable to create city"});
+             return new ResponseModel<CityModel>(null,false,new[]{"Unable to create city"});
         }
 
         [HttpPut("{id}")]
@@ -75,7 +75,7 @@ namespace YourCityEventsApi.Controllers
                 return new ResponseModel<CityModel>(data);
             }
 
-            return new ResponseModel<CityModel>(null, "false", new[] {"Unable to find city for updating"});
+            return new ResponseModel<CityModel>(null, false, new[] {"Unable to find city for updating"});
         }
         
         [HttpDelete("{id}")]
@@ -85,10 +85,10 @@ namespace YourCityEventsApi.Controllers
             if (city != null)
             {
                 _cityService.Delete(id);
-                return new ResponseModel<string>(null, "Ok");
+                return new ResponseModel<string>(null);
             }
 
-            return new ResponseModel<string>(null, "false", new[] {"Unable to find city for deleting"});
+            return new ResponseModel<string>(null, false, new[] {"Unable to find city for deleting"});
         }
     }
 }
