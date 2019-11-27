@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <PackageReference Include="DotNetTools" Version="0.0.2" />
+        <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.14.5" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.Azure.ConfigurationManager" Version="4.0.0" />

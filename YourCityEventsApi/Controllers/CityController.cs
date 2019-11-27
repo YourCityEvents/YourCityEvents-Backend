@@ -25,57 +25,32 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<List<CityModel>>> Get()
         {
             var cityList = _cityService.Get();
-            var data=new Dictionary<string,List<CityModel>>();
-            data.Add("cities",cityList);
-            if (cityList != null)
-            {
-                return new ResponseModel<List<CityModel>>(data);
-            }
 
-            return new ResponseModel<List<CityModel>>(null, false, new[] {"Unable to get models"});
+            return ResponseModel<List<CityModel>>.FormResponse("cities", cityList, "Unable to get cities");
         }
 
         [HttpGet("{id}")]
         public ActionResult<ResponseModel<CityModel>> Get(string id)
         {
             var city = _cityService.Get(id);
-            var data = new Dictionary<string, CityModel>();
-            data.Add("city",city);
-            if (city != null)
-            {
-                return new ResponseModel<CityModel>(data);
-            }
-            
-            return new ResponseModel<CityModel>(null,false,new[]{"City not found"});
+
+            return ResponseModel<CityModel>.FormResponse("city",city,"City not found");
         }
 
         [HttpPost]
         public ActionResult<ResponseModel<CityModel>> Create(CityModel cityModel)
         {
              var city = _cityService.Create(cityModel);
-             var data=new Dictionary<string,CityModel>();
-             data.Add("city",city);
-             if (city != null)
-             {
-                 return new ResponseModel<CityModel> (data);
-             }
-             
-             return new ResponseModel<CityModel>(null,false,new[]{"Unable to create city"});
+
+             return ResponseModel<CityModel>.FormResponse("city",city,"Unable to create city");
         }
 
         [HttpPut("{id}")]
         public ActionResult<ResponseModel<CityModel>> Update(string id,CityModel cityModel)
         {
             var city = _cityService.Get(id);
-            var data=new Dictionary<string,CityModel>();
-            data.Add("city",city);
-            if (city != null)
-            {
-                _cityService.Update(id, cityModel);
-                return new ResponseModel<CityModel>(data);
-            }
 
-            return new ResponseModel<CityModel>(null, false, new[] {"Unable to find city for updating"});
+            return ResponseModel<CityModel>.FormResponse("city",city,"Unable to find city for updating");
         }
         
         [HttpDelete("{id}")]

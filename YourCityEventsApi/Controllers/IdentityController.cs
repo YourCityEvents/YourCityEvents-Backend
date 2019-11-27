@@ -35,41 +35,36 @@ namespace YourCityEventsApi.Controllers
 
             var authResponse = _identityService.Register(request.Email.ToLower(), request.Password, request.FirstName
                 , request.LastName, request.City);
-            
-            _userService.AddUserToken(request.Email.ToLower(),authResponse.Token);
-            
+
             if (!authResponse.Success)
             {
                 return new ResponseModel<string>(null,false,authResponse.Errors);
 
             }
             
-            var data=new Dictionary<string,string>();
-            data.Add("token",authResponse.Token);
-            
-            return new ResponseModel<string>(data);
+            _userService.AddUserToken(request.Email.ToLower(),authResponse.Token);
+           
+            return ResponseModel<string>.FormResponse("token",authResponse.Token,null);
         }
-        
+
         [HttpPost("login")]
         public ActionResult<ResponseModel<string>> Login(UserLoginRequest request)
         {
             var authResponse = _identityService.Login(request.Email.ToLower(), request.Password);
 
-            _userService.AddUserToken(request.Email.ToLower(),authResponse.Token);
-            
             if (!authResponse.Success)
             {
-                return new ResponseModel<string>(null,false,authResponse.Errors);
+                return new ResponseModel<string>(null, false, authResponse.Errors);
 
             }
-            
-            var data=new Dictionary<string,string>();
-            data.Add("token",authResponse.Token);
 
-            return new ResponseModel<string>(data);
+            _userService.AddUserToken(request.Email.ToLower(), authResponse.Token);
+
+            return ResponseModel<string>.FormResponse("token", authResponse.Token, null);
+
         }
 
-        
+
     }
     
 }

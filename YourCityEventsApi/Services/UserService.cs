@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using YourCityEventsApi.Model;
 using System.Drawing;
+using ImageMagick;
 using Microsoft.AspNetCore.Hosting;
 
 namespace YourCityEventsApi.Services
@@ -104,13 +105,16 @@ namespace YourCityEventsApi.Services
 
         public string UploadImage(string token, UploadImageModel imageModel)
         {
-            var userId = Get(token).Id;
+            var user = Get(token);
+            var wwwrootPath = _hostingEnvironment.WebRootPath;
+            var directoryPath ="/images/"+user.Id+".jpg";
             var memoryStream = new MemoryStream(imageModel.Array);
             var image = Image.FromStream(memoryStream);
-            var wwwrootPath = _hostingEnvironment.WebRootPath;
-            var directoryPath ="/images/"+userId+".jpg";
-            image.Save(wwwrootPath+directoryPath);
-            return "yourcityevents.azurewebsites.net"+directoryPath;
+            image.Save(wwwrootPath + directoryPath);
+            var finalPath="https://yourcityevents.azurewebsites.net"+directoryPath;
+            user.ImageUrl = finalPath;
+            _users.ReplaceOne(u => u.Id == user.Id, user);
+            return finalPath;
         }
 
         public void Delete(string id)

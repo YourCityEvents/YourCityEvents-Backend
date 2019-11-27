@@ -21,18 +21,26 @@ namespace YourCityEventsApi.Services
             
         }
 
-        public List<EventModel> Get()
+        public List<EventModel> GetAll()
         {
-            return _events.Find(Event => true).ToList();
+            return _events.Find(e => true).ToList();
         }
-            
+        
+        public List<EventModel> GetAllByCurrentDate()
+        {
+            return _events.Find(e => e.Date.CompareTo(DateTime.Now)>0).ToList();
+        }
 
+        public List<EventModel> GetByCity(CityModel cityModel)
+        {
+            return _events.Find(e => e.Location == cityModel&&e.Date.CompareTo(DateTime.Now)>0).ToList();
+        }
 
         public EventModel Get(string id) =>
-            _events.Find(Event => Event.Id == id).FirstOrDefault();
+            _events.Find(e => e.Id == id).FirstOrDefault();
 
         public EventModel GetByTitle(string title) =>
-            _events.Find(Event => Event.Title == title).FirstOrDefault();
+            _events.Find(e => e.Title == title).FirstOrDefault();
 
         public List<UserModel> GetVisitors(string id)
         {

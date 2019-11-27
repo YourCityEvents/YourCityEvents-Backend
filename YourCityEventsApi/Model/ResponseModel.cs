@@ -17,5 +17,18 @@ namespace YourCityEventsApi.Model
             Result = result;
             Errors = errors;
         }
+
+        public static ResponseModel<Type> FormResponse(string key,Type dictionaryData
+            ,string errorMessage)
+        {
+            if (dictionaryData != null)
+            {
+                var data = new Dictionary<string, Type>();
+                data.Add(key, dictionaryData);
+                return new ResponseModel<Type>(data);
+            }
+
+            return new ResponseModel<Type>(null,false,new []{errorMessage});
+        }
     }
 }
