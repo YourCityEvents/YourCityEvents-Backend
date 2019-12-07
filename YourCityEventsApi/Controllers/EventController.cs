@@ -15,12 +15,10 @@ namespace YourCityEventsApi.Controllers
     public class EventController : ControllerBase
     {
         private readonly EventService _eventService;
-        private readonly UserService _userService;
 
-        public EventController(EventService eventService,UserService userService)
+        public EventController(EventService eventService)
         {
             _eventService = eventService;
-            _userService = userService;;
         }
 
         [HttpGet("all")]
@@ -32,7 +30,7 @@ namespace YourCityEventsApi.Controllers
                 ,  "Unable to get events");
         }
 
-        [HttpGet("for_all_cities")]
+        [HttpGet("forAllCities")]
         public ActionResult<ResponseModel<List<EventModel>>> GetAllByCurrentDate()
         {
             var eventList = _eventService.GetAllByCurrentDate();
@@ -45,8 +43,7 @@ namespace YourCityEventsApi.Controllers
         public ActionResult<ResponseModel<List<EventModel>>> GetByCity([FromHeader] string Authorization)
         {
             string token = Authorization.Split()[1];
-            var city = _userService.Get(token).City;
-            var eventList = _eventService.GetByCity(city);
+            var eventList = _eventService.GetByToken(token);
 
             return ResponseModel<List<EventModel>>.FormResponse("events", eventList, "Unable to get events");
         }
@@ -84,11 +81,11 @@ namespace YourCityEventsApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<ResponseModel<EventModel>> Update(string id, EventModel eventModel)
+        public ActionResult<ResponseModel<string>> Update(string id, EventModel eventModel)
         {
-            var Event = _eventService.Get(id);
+            _eventService.Update(id,eventModel);
 
-            return ResponseModel<EventModel>.FormResponse("event", Event, "Unable to find event for updating");
+            return new ResponseModel<string>(null);
         }
 
         [HttpDelete("{id}")]

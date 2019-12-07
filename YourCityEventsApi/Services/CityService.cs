@@ -24,8 +24,10 @@ namespace YourCityEventsApi.Services
             return _cities.Find(city => true).ToList();
         }
 
-        public CityModel Get(string id) =>
-            _cities.Find(city => city.Id == id).FirstOrDefault();
+        public CityModel Get(string id)
+        {
+            return _cities.Find(city => city.Id == id).FirstOrDefault();
+        }
 
         public CityModel GetByNameUa(string cityNameUa)
         {
@@ -70,8 +72,9 @@ namespace YourCityEventsApi.Services
             _cities.ReplaceOne(city => city.Id == id, cityModel);
         }
 
-        public void Delete(string id) =>
+        public void Delete(string id)
+        {
             _cities.DeleteOne(city => city.Id == id);
-        
+        }
     }
 }

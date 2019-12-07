@@ -29,7 +29,7 @@ namespace YourCityEventsApi.Model
         public DateTime Date { get; set; }
         
         [BsonElement("image_urls")]
-        public string[] ImageUrls { get; set; }
+        public string ImageUrl { get; set; }
         
         [BsonElement("links")]
         public string[] Links { get; set; }
@@ -41,7 +41,7 @@ namespace YourCityEventsApi.Model
         public long Price { get; set; }
 
         public EventModel(string id, string title, CityModel location, string description, UserModel owner
-        ,DateTime date, long price,string[] imageUrls = null,string[] links=null, UserModel[] visitors=null)
+        ,DateTime date, long price,string imageUrl = null,string[] links=null, UserModel[] visitors=null)
         {
             Id = id;
             Title = title;
@@ -49,7 +49,7 @@ namespace YourCityEventsApi.Model
             Description = description;
             Owner = owner;
             Date = date;
-            ImageUrls = imageUrls;
+            ImageUrl = imageUrl;
             Links = links;
             Visitors = visitors;
             Price = price;

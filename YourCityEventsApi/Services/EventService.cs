@@ -2,8 +2,12 @@ using System;
 using MongoDB.Driver;
 using YourCityEventsApi.Model;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Drawing;
+using Microsoft.AspNetCore.Hosting;
+
 
 namespace YourCityEventsApi.Services
 {
@@ -11,14 +15,18 @@ namespace YourCityEventsApi.Services
     {
         private IMongoCollection<EventModel> _events;
         private IMongoCollection<UserModel> _users;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly UserService _userService;
 
-        public EventService(IDatabaseSettings settings)
+        public EventService(IDatabaseSettings settings, IHostingEnvironment hostingEnvironment
+            , UserService userService)
         {
             var client=new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
             _events = database.GetCollection<EventModel>("Events");
             _users = database.GetCollection<UserModel>("Users");
-            
+            _hostingEnvironment = hostingEnvironment;
+            _userService = userService;
         }
 
         public List<EventModel> GetAll()
@@ -33,24 +41,50 @@ namespace YourCityEventsApi.Services
 
         public List<EventModel> GetByCity(CityModel cityModel)
         {
-            return _events.Find(e => e.Location == cityModel&&e.Date.CompareTo(DateTime.Now)>0).ToList();
+            return _events.Find(e => e.Location == cityModel&&e.Date
+                                         .CompareTo(DateTime.Now)>0).ToList();
         }
 
-        public EventModel Get(string id) =>
-            _events.Find(e => e.Id == id).FirstOrDefault();
+        public List<EventModel> GetByToken(string token)
+        {
+            var city = _userService.Get(token).City;
+            return _events.Find(e => e.Location == city && e.Date
+                                         .CompareTo(DateTime.Now) > 0).ToList();
+        }
 
-        public EventModel GetByTitle(string title) =>
-            _events.Find(e => e.Title == title).FirstOrDefault();
+        public EventModel Get(string id)
+        {
+            return _events.Find(e => e.Id == id).FirstOrDefault();
+        }
+
+        public EventModel GetByTitle(string title)
+        {
+            return _events.Find(e => e.Title == title).FirstOrDefault();
+        }
 
         public List<UserModel> GetVisitors(string id)
         {
             return Get(id).Visitors.ToList();
         }
 
+        private string UploadImage(string array, string eventId)
+        {
+            var wwwrootPath = _hostingEnvironment.WebRootPath;
+            var directoryPath = "/events/" + eventId + ".jpg";
+            var memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(array));
+            var image = Image.FromStream(memoryStream);
+            image.Save(wwwrootPath+directoryPath);
+            return "https://yourcityevents.azurewebsites.net" + directoryPath;
+        }
+
         public EventModel Create(EventModel eventModel)
         {
             _events.InsertOne(eventModel);
-            return GetByTitle(eventModel.Title);
+            var createdEvent = GetByTitle(eventModel.Title);
+            var imageUrl=UploadImage(createdEvent.ImageUrl,createdEvent.Id);
+            createdEvent.ImageUrl = imageUrl;
+            _events.ReplaceOne(e => e.Id == createdEvent.Id, createdEvent);
+            return createdEvent;
         }
 
         public void Update(string id, EventModel eventModel)

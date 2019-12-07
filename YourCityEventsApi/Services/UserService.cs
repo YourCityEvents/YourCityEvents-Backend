@@ -2,15 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using YourCityEventsApi.Model;
 using System.Drawing;
-using ImageMagick;
 using Microsoft.AspNetCore.Hosting;
+using System.Linq;
 
 namespace YourCityEventsApi.Services
 {
@@ -34,11 +30,15 @@ namespace YourCityEventsApi.Services
             return _users.Find(user => true).ToList();
         }
 
-        public UserModel Get(string token) =>
-            _users.Find(user => user.Token == token).FirstOrDefault();
+        public UserModel Get(string token)
+        {
+            return _users.Find(user => user.Token == token).FirstOrDefault();
+        }
 
-        public UserModel GetById(string id) =>
-            _users.Find(user => user.Id == id).FirstOrDefault();
+        public UserModel GetById(string id)
+        {
+            return _users.Find(user => user.Id == id).FirstOrDefault();
+        }
 
         public UserModel GetByEmail(string email)
         {
@@ -107,7 +107,7 @@ namespace YourCityEventsApi.Services
         {
             var user = Get(token);
             var wwwrootPath = _hostingEnvironment.WebRootPath;
-            var directoryPath ="/images/"+user.Id+".jpg";
+            var directoryPath ="/users/"+user.Id+".jpg";
             var memoryStream = new MemoryStream(imageModel.Array);
             var image = Image.FromStream(memoryStream);
             image.Save(wwwrootPath + directoryPath);

@@ -69,14 +69,14 @@ namespace YourCityEventsApi.Controllers
         }
         
         [HttpPut("{id}")]
-        public ActionResult<ResponseModel<UserModel>> Update(string id,UserModel userModel)
+        public ActionResult<ResponseModel<string>> Update(string id,UserModel userModel)
         {
-            var user = _userService.GetById(id);
+            _userService.Update(id,userModel);
 
-            return ResponseModel<UserModel>.FormResponse("user",user,"Unable to find user for updating");
+            return new ResponseModel<string>(null);
         }
 
-        [HttpPut("change_password")]
+        [HttpPut("changePassword")]
         public ActionResult<ResponseModel<string>> ChangePassword([FromHeader] string Authorization
         ,ChangePasswordRequest request)
         {
@@ -91,7 +91,7 @@ namespace YourCityEventsApi.Controllers
             return new ResponseModel<string>(null,false,new []{"Wrong password"});
         }
         
-        [HttpPut("change_email")]
+        [HttpPut("changeEmail")]
         public ActionResult<ResponseModel<string>> ChangeEmail([FromHeader] string Authorization
         ,ChangeEmailRequest request)
         {
@@ -105,7 +105,7 @@ namespace YourCityEventsApi.Controllers
             return new ResponseModel<string>(null,false,new []{"Wrong password"});
         }
 
-        [HttpPut("upload_image")]
+        [HttpPut("uploadImage")]
         public ActionResult<ResponseModel<string>> UploadImage([FromHeader] string Authorization
         ,UploadImageModel imageModel)
         {
