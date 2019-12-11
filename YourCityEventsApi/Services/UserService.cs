@@ -7,6 +7,9 @@ using YourCityEventsApi.Model;
 using System.Drawing;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace YourCityEventsApi.Services
 {
@@ -14,70 +17,113 @@ namespace YourCityEventsApi.Services
     {
         private IMongoCollection<UserModel> _users;
         private IMongoCollection<EventModel> _events;
+        private IDatabase _redisUsersDatabase;
+        private IDatabase _redisEventsDatabase;
+        private IServer _server;
+        private IEnumerable<RedisKey> _keys;
+        private readonly TimeSpan ttl = new TimeSpan(0, 1, 59, 0);
         private readonly IHostingEnvironment _hostingEnvironment;
-        
-        public UserService(IDatabaseSettings settings,IHostingEnvironment hostingEnvironment)
+
+        public UserService(IMongoSettings mongoSettings,IHostingEnvironment hostingEnvironment)
         {
-            var client=new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
+            var client=new MongoClient(mongoSettings.ConnectionString);
+            var database = client.GetDatabase(mongoSettings.DatabaseName);
             _users = database.GetCollection<UserModel>("Users");
+
             _events = database.GetCollection<EventModel>("Events");
+            
+            var redis = RedisSettings.GetConnectionMultiplexer();
+            _redisUsersDatabase = redis.GetDatabase(0);
+            _redisEventsDatabase = redis.GetDatabase(1);
+            _server = redis.GetServer(_redisUsersDatabase.Multiplexer.GetEndPoints().First());
+            _keys = _server.Keys();
+            
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public List<UserModel> Get()
+        public List<UserModel> GetAll()
         {
-            return _users.Find(user => true).ToList();
+            var allUsers = new List<UserModel>();
+            foreach (var key in _keys)
+            {
+                allUsers.Add(JsonConvert.DeserializeObject<UserModel>(_redisUsersDatabase.StringGet(key)));
+            }
+
+            return allUsers;
         }
 
         public UserModel Get(string token)
         {
-            return _users.Find(user => user.Token == token).FirstOrDefault();
+            foreach (var key in _keys)
+            {
+                var user = JsonConvert.DeserializeObject<UserModel>(_redisUsersDatabase.StringGet(key));
+                if (user.Token == token)
+                {
+                    return user;
+                }
+            }
+
+            return null;
         }
 
         public UserModel GetById(string id)
         {
-            return _users.Find(user => user.Id == id).FirstOrDefault();
+            foreach (var key in _keys)
+            {
+                var user = JsonConvert.DeserializeObject<UserModel>(_redisUsersDatabase.StringGet(key));
+                if (user.Id == id)
+                {
+                    return user;
+                }
+            }
+
+            return null;
         }
 
         public UserModel GetByEmail(string email)
         {
-            return _users.Find(user => user.Email==email)
-                .FirstOrDefault();
+            foreach (var key in _keys)
+            {
+                var user = JsonConvert.DeserializeObject<UserModel>(_redisUsersDatabase.StringGet(key));
+                if (user.Email == email)
+                {
+                    return user;
+                }
+            }
+
+            return null;
         }
 
         public List<EventModel> GetHostingEvents(string id)
         {
-            List<EventModel> eventList = new List<EventModel>();
             var user = GetById(id);
-            eventList = user.HostingEvents.ToList();
-            return eventList;
+            return user.HostingEvents.ToList();
         }
         
         public List<EventModel> GetVisitingEvents(string id)
         {
-            List<EventModel> eventList = new List<EventModel>();
             var user = GetById(id);
-            eventList = user.VisitingEvents.ToList();
-            return eventList;
+            return user.VisitingEvents.ToList();;
         }
         
         public void AddUserToken(string email,string token)
         {
             var user = GetByEmail(email);
             user.Token = token;
-            Update(user.Id,user);
+            _users.ReplaceOne(u => u.Email == email, user);
         }
         
         public UserModel Create(UserModel userModel)
         {
             _users.InsertOne(userModel);
-            return GetByEmail(userModel.Email);
+            var user = GetByEmail(userModel.Email);
+            _redisUsersDatabase.StringSet(user.Id, JsonConvert.SerializeObject(user),ttl);
+            return user;
         }
 
         public void Update(string id, UserModel userModel)
         {
-            var events = _events.Find(e => true).ToList().ToArray();
+            var events = _events.Find(e=>true).ToList().ToArray();
 
             for (int i = 0; i < events.Length; i++)
             {
@@ -97,10 +143,12 @@ namespace YourCityEventsApi.Services
                     }
                 }
                 
-                _events.ReplaceOne(e => e.Id == events[i].Id, events[i]);
+                _events.ReplaceOne(events[i].Id, events[i]);
+                _redisEventsDatabase.StringSet(events[i].Id, JsonConvert.SerializeObject(events[i]), ttl);
             }
 
             _users.ReplaceOne(user => user.Id == id, userModel);
+            _redisUsersDatabase.StringSet(id,JsonConvert.SerializeObject(userModel),ttl);
         }
 
         public string UploadImage(string token, UploadImageModel imageModel)
@@ -114,6 +162,7 @@ namespace YourCityEventsApi.Services
             var finalPath="https://yourcityevents.azurewebsites.net"+directoryPath;
             user.ImageUrl = finalPath;
             _users.ReplaceOne(u => u.Id == user.Id, user);
+            _redisUsersDatabase.StringSet(user.Id,JsonConvert.SerializeObject(user),ttl);
             return finalPath;
         }
 
@@ -124,14 +173,17 @@ namespace YourCityEventsApi.Services
             {
                 if (e.Owner.Id == id)
                 {
-                    _events.DeleteOne(ev => ev.Id == e.Id);
+                    _events.DeleteOne(e.Id);
+                    _redisEventsDatabase.KeyDelete(e.Id);
                     break;
                 }
 
                 e.Visitors = e.Visitors.Where(visitor => visitor.Id != id).ToArray();
-                _events.ReplaceOne(ev => ev.Id == e.Id, e);
+                _events.ReplaceOne(e.Id, e);
+                _redisEventsDatabase.StringSet(e.Id, JsonConvert.SerializeObject(e), ttl);
             }
             _users.DeleteOne(user => user.Id == id);
+            _redisUsersDatabase.KeyDelete(id);
         }
 
         public bool ChangeEmail(string token,string password, string newEmail)

@@ -1,63 +1,116 @@
+using System;
 using MongoDB.Driver;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
+using StackExchange.Redis;
 using YourCityEventsApi.Model;
 
 namespace YourCityEventsApi.Services
 {
     public class CityService
     {
-        private IMongoCollection<CityModel> _cities;
         private IMongoCollection<UserModel> _users;
         private IMongoCollection<EventModel> _events;
+        private IMongoCollection<CityModel> _cities;
+        private IDatabase _redisCitiesDatabase;
+        private IDatabase _redisUsersDatabase;
+        private IDatabase _redisEventsDatabase;
+        private IServer _server;
+        private readonly IEnumerable<RedisKey> _keys;
+        private readonly TimeSpan ttl = new TimeSpan(0,0 , 0, 9);
 
-        public CityService(IDatabaseSettings settings)
+        public CityService(IMongoSettings settings)
         {
             var client=new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
             _cities = database.GetCollection<CityModel>("Cities");
             _users = database.GetCollection<UserModel>("Users");
             _events = database.GetCollection<EventModel>("Events");
+
+            var redis = RedisSettings.GetConnectionMultiplexer();
+            _redisUsersDatabase = redis.GetDatabase(0);
+            _redisEventsDatabase = redis.GetDatabase(1);
+            _redisCitiesDatabase = redis.GetDatabase(2);
+            _server = redis.GetServer(_redisCitiesDatabase.Multiplexer.GetEndPoints().First());
+            _keys = _server.Keys(2);
         }
 
-        public List<CityModel> Get()
+        public List<CityModel> GetAll()
         {
-            return _cities.Find(city => true).ToList();
+            var allCities = new List<CityModel>();
+            foreach (var key in _keys)
+            {
+                Console.WriteLine(key);
+                allCities.Add(JsonConvert.DeserializeObject<CityModel>(_redisCitiesDatabase.StringGet(key)));
+            }
+
+            return allCities;
         }
 
         public CityModel Get(string id)
         {
-            return _cities.Find(city => city.Id == id).FirstOrDefault();
+            foreach (var key in _keys)
+            {
+                var city = JsonConvert.DeserializeObject<CityModel>(_redisCitiesDatabase.StringGet(key));
+                if (city.Id == id)
+                {
+                    return city;
+                }
+            }
+
+            return null;
         }
 
         public CityModel GetByNameUa(string cityNameUa)
         {
-            return _cities.Find(city => city.NameUa == cityNameUa)
-                .FirstOrDefault();
+            foreach (var key in _keys)
+            {
+                var city = JsonConvert.DeserializeObject<CityModel>(_redisCitiesDatabase.StringGet(key));
+                if (city.NameUa == cityNameUa)
+                {
+                    return city;
+                }
+            }
+
+            return null;
         }
         
         public CityModel GetByNameEn(string cityNameEn)
         {
-            return _cities.Find(city => city.NameEn == cityNameEn)
-                .FirstOrDefault();
+            foreach (var key in _keys)
+            {
+                var city = JsonConvert.DeserializeObject<CityModel>(_redisCitiesDatabase.StringGet(key));
+                if (city.NameEn == cityNameEn)
+                {
+                    return city;
+                }
+            }
+
+            return null;
         }
 
         public CityModel Create(CityModel cityModel)
         {
             _cities.InsertOne(cityModel);
-            return GetByNameUa(cityModel.NameUa);
+            var city = GetByNameUa(cityModel.NameUa);
+            _redisCitiesDatabase.StringSet(city.Id, JsonConvert.SerializeObject(city), ttl);
+            return city;
         }
 
         public void Update(string id, CityModel cityModel)
         {
-            var users = _users.Find(user => true).ToList();
+            var users = _users.Find(u => true).ToList();
             var events = _events.Find(e => true).ToList();
 
             foreach (var user in users)
             {
                 if (user.City.Id == id)
                 {
-                    user.City = cityModel;
-                    _users.ReplaceOne(u => u.Id == user.Id, user);
+                    user.City = cityModel;;
+                    _users.ReplaceOne(user.Id, user);
+                    _redisUsersDatabase.StringSet(user.Id, JsonConvert.SerializeObject(user), ttl);
                 }
             }
 
@@ -66,15 +119,18 @@ namespace YourCityEventsApi.Services
                 if (Event.Location.Id == id)
                 {
                     Event.Location = cityModel;
-                    _events.ReplaceOne(e => e.Id == Event.Id, Event);
+                    _events.ReplaceOne(Event.Id, Event);
+                    _redisEventsDatabase.StringSet(Event.Id, JsonConvert.SerializeObject(Event), ttl);
                 }
             }
             _cities.ReplaceOne(city => city.Id == id, cityModel);
+            _redisCitiesDatabase.StringSet(id, JsonConvert.SerializeObject(cityModel), ttl);
         }
 
         public void Delete(string id)
         {
             _cities.DeleteOne(city => city.Id == id);
+            _redisCitiesDatabase.KeyDelete(id);
         }
     }
 }

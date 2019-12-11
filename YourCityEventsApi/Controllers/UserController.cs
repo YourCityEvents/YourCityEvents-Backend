@@ -20,9 +20,9 @@ namespace YourCityEventsApi.Controllers
         }
 
         [HttpGet("all")]
-        public ActionResult<ResponseModel<List<UserModel>>> Get()
+        public ActionResult<ResponseModel<List<UserModel>>> GetAll()
         {
-            var userList= _userService.Get();
+            var userList= _userService.GetAll();
             
             return ResponseModel<List<UserModel>>.FormResponse("users",userList,"Unable to get users");
         }

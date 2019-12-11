@@ -57,8 +57,7 @@ namespace YourCityEventsApi.Services
             var newUser = new UserModel(null,email,password,firstName,lastName,city);
 
             var createdUser = _userService.Create(newUser);
-            
-            return GenerateAuthenticationResult(newUser);
+            return GenerateAuthenticationResult(createdUser);
         }
 
         public AuthenticationResult Login(string email, string password)

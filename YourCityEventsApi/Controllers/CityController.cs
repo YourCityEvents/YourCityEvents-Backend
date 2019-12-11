@@ -1,10 +1,8 @@
+using System;
 using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using YourCityEventsApi.Services;
 using System.Collections.Generic;
-using System.Globalization;
-using Microsoft.AspNetCore.Authorization;
-using MongoDB.Bson.Serialization.Attributes;
 using YourCityEventsApi.Model;
 
 namespace YourCityEventsApi.Controllers
@@ -21,11 +19,11 @@ namespace YourCityEventsApi.Controllers
             _cityService = cityService;
         }
 
-        [HttpGet]
-        public ActionResult<ResponseModel<List<CityModel>>> Get()
+        [HttpGet("all")]
+        public ActionResult<ResponseModel<List<CityModel>>> GetAll()
         {
-            var cityList = _cityService.Get();
-
+            var cityList = _cityService.GetAll();
+            
             return ResponseModel<List<CityModel>>.FormResponse("cities", cityList, "Unable to get cities");
         }
 
@@ -46,11 +44,11 @@ namespace YourCityEventsApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<ResponseModel<CityModel>> Update(string id,CityModel cityModel)
+        public ActionResult<ResponseModel<string>> Update(string id,CityModel cityModel)
         {
-            var city = _cityService.Get(id);
+            _cityService.Update(id,cityModel);
 
-            return ResponseModel<CityModel>.FormResponse("city",city,"Unable to find city for updating");
+            return new ResponseModel<string>(null);
         }
         
         [HttpDelete("{id}")]

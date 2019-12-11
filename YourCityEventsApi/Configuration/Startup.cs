@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Xml.Schema;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,13 +11,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.Swagger.Model;
 using YourCityEventsApi.Model;
+using YourCityEventsApi.ScheduleTask;
 using YourCityEventsApi.Security;
 using YourCityEventsApi.Services;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace YourCityEventsApi
 {
@@ -34,11 +38,17 @@ namespace YourCityEventsApi
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.Configure<DatabaseSettings>(
-                Configuration.GetSection(nameof(DatabaseSettings)));
+            services.Configure<MongoSettings>(
+                Configuration.GetSection(nameof(MongoSettings)));
 
-            services.AddSingleton<IDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+            services.AddSingleton<IMongoSettings>(sp =>
+                sp.GetRequiredService<IOptions<MongoSettings>>().Value);
+            
+            services.Configure<RedisSettings>(
+                Configuration.GetSection(nameof(RedisSettings)));
+
+            services.AddSingleton<IRedisSettings>(sp =>
+                sp.GetRequiredService<IOptions<RedisSettings>>().Value);
 
             var jwtSettings=new JwtSettings();
             Configuration.Bind(nameof(jwtSettings),jwtSettings); 
@@ -77,7 +87,11 @@ namespace YourCityEventsApi
             services.AddSingleton<EventService>();
             services.AddSingleton<CityService>();
             services.AddScoped<IdentityService>();
+
+            services.AddDistributedMemoryCache();
             
+            services.AddHostedService<ScheduleTaskService>();
+            services.AddScoped<IScopedService, ScopedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
