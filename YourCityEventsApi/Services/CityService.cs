@@ -3,7 +3,6 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using StackExchange.Redis;
 using YourCityEventsApi.Model;
 
@@ -19,7 +18,7 @@ namespace YourCityEventsApi.Services
         private IDatabase _redisEventsDatabase;
         private IServer _server;
         private readonly IEnumerable<RedisKey> _keys;
-        private readonly TimeSpan ttl = new TimeSpan(0,0 , 0, 9);
+        private readonly TimeSpan ttl = new TimeSpan(0,1 , 59, 59);
 
         public CityService(IMongoSettings settings)
         {

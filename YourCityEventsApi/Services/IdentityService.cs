@@ -12,16 +12,18 @@ namespace YourCityEventsApi.Services
     {
 
         private readonly UserService _userService;
+        private readonly string _jwtSecret;
 
-        public IdentityService(UserService userService)
+            public IdentityService(IJwtSettings jwtSettings,UserService userService)
         {
             _userService=userService;
+            _jwtSecret = jwtSettings.Secret;
         }
 
         private AuthenticationResult GenerateAuthenticationResult(UserModel newUser)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]

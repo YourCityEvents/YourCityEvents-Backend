@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using YourCityEventsApi.Services;
 
 namespace YourCityEventsApi.Model
 {

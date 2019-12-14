@@ -21,7 +21,7 @@ namespace YourCityEventsApi.Services
         private IDatabase _redisUsersDatabase;
         private IServer _server;
         private IEnumerable<RedisKey> _keys;
-        private readonly TimeSpan ttl = new TimeSpan(0, 1, 59, 0);
+        private readonly TimeSpan ttl = new TimeSpan(0, 1, 59, 59);
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public EventService(IMongoSettings settings, IHostingEnvironment hostingEnvironment)

@@ -7,15 +7,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.Swagger.Model;
 using YourCityEventsApi.Model;
 using YourCityEventsApi.ScheduleTask;
 using YourCityEventsApi.Security;
@@ -49,6 +46,12 @@ namespace YourCityEventsApi
 
             services.AddSingleton<IRedisSettings>(sp =>
                 sp.GetRequiredService<IOptions<RedisSettings>>().Value);
+
+            services.Configure<JwtSettings>(
+                Configuration.GetSection(nameof(JwtSettings)));
+
+            services.AddSingleton<IJwtSettings>(sp =>
+                sp.GetRequiredService<IOptions<JwtSettings>>().Value);
 
             var jwtSettings=new JwtSettings();
             Configuration.Bind(nameof(jwtSettings),jwtSettings); 

@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using YourCityEventsApi.Services;
 using System.Collections.Generic;
@@ -7,7 +5,6 @@ using YourCityEventsApi.Model;
 
 namespace YourCityEventsApi.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CityController:ControllerBase

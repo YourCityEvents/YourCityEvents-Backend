@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.Swagger.Model;
 
 namespace YourCityEventsApi.Security
 {

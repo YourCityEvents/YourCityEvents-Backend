@@ -6,8 +6,6 @@ using MongoDB.Driver;
 using YourCityEventsApi.Model;
 using System.Drawing;
 using Microsoft.AspNetCore.Hosting;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
@@ -21,7 +19,7 @@ namespace YourCityEventsApi.Services
         private IDatabase _redisEventsDatabase;
         private IServer _server;
         private IEnumerable<RedisKey> _keys;
-        private readonly TimeSpan ttl = new TimeSpan(0, 1, 59, 0);
+        private readonly TimeSpan ttl = new TimeSpan(0, 1, 59, 59);
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public UserService(IMongoSettings mongoSettings,IHostingEnvironment hostingEnvironment)
@@ -111,12 +109,13 @@ namespace YourCityEventsApi.Services
             var user = GetByEmail(email);
             user.Token = token;
             _users.ReplaceOne(u => u.Email == email, user);
+            _redisUsersDatabase.StringSet(user.Id, JsonConvert.SerializeObject(user), ttl);
         }
         
         public UserModel Create(UserModel userModel)
         {
             _users.InsertOne(userModel);
-            var user = GetByEmail(userModel.Email);
+            var user = _users.Find(u => u.Email == userModel.Email).FirstOrDefault();
             _redisUsersDatabase.StringSet(user.Id, JsonConvert.SerializeObject(user),ttl);
             return user;
         }

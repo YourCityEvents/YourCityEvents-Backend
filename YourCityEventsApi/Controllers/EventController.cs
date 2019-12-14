@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Emit;
 using YourCityEventsApi.Model;
 using YourCityEventsApi.Services;
 

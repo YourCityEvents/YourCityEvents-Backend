@@ -1,7 +1,4 @@
 using System;
-using ImageMagick;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2.HPack;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using StackExchange.Redis;
 
 namespace YourCityEventsApi.Model
@@ -13,18 +10,6 @@ namespace YourCityEventsApi.Model
         public int Port { get; set; }
         
         public string Password { get; set; }
-
-        public static IDatabase ConnectToDatabase(IRedisSettings redisSettings,int databaseIndex)
-        {
-            ConfigurationOptions options = new ConfigurationOptions()
-            {    
-                EndPoints = {{redisSettings.Host,redisSettings.Port}},
-                Password = redisSettings.Password
-            };
-            ConnectionMultiplexer redis=ConnectionMultiplexer.Connect(options);
-            
-            return redis.GetDatabase(databaseIndex);
-        }
 
         public static ConnectionMultiplexer GetConnectionMultiplexer()
         {
