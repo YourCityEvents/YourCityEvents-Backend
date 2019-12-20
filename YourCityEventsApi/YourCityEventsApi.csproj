@@ -5,9 +5,13 @@
         <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="DotNetTools" Version="0.0.2" />
-        <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.14.5" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.Azure.ConfigurationManager" Version="4.0.0" />
@@ -20,31 +24,15 @@
         <PackageReference Include="System.Drawing.Common" Version="4.7.0-preview3.19551.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="CustomSwagger\theme-monokai.css" />
+      <None Remove="CustomSwagger\index.html" />
+      <EmbeddedResource Include="CustomSwagger\index.html" />
+    </ItemGroup>
+
 </Project>
 
 
 
 
-<!--
-<Project Sdk="Microsoft.NET.Sdk.Web">
-
-    <PropertyGroup>
-        <TargetFramework>netcoreapp2.2</TargetFramework>
-        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="$
-        <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
-    </ItemGroup>
-
-<<<<<<< HEAD
-    <ItemGroup>
-      <Folder Include="Sources" />
-    </ItemGroup>
-
-=======
->>>>>>> d954089b35a675d5580494283b8206dd0577cf90
-</Project>-->
 

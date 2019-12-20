@@ -16,7 +16,6 @@ namespace YourCityEventsApi.Services
         private IDatabase _redisCitiesDatabase;
         private IDatabase _redisUsersDatabase;
         private IDatabase _redisEventsDatabase;
-        private IServer _server;
         private readonly IEnumerable<RedisKey> _keys;
         private readonly TimeSpan ttl = new TimeSpan(0,1 , 59, 59);
 
@@ -32,8 +31,7 @@ namespace YourCityEventsApi.Services
             _redisUsersDatabase = redis.GetDatabase(0);
             _redisEventsDatabase = redis.GetDatabase(1);
             _redisCitiesDatabase = redis.GetDatabase(2);
-            _server = redis.GetServer(_redisCitiesDatabase.Multiplexer.GetEndPoints().First());
-            _keys = _server.Keys(2);
+            _keys = redis.GetServer(_redisCitiesDatabase.Multiplexer.GetEndPoints().First()).Keys(2);
         }
 
         public List<CityModel> GetAll()
@@ -41,7 +39,6 @@ namespace YourCityEventsApi.Services
             var allCities = new List<CityModel>();
             foreach (var key in _keys)
             {
-                Console.WriteLine(key);
                 allCities.Add(JsonConvert.DeserializeObject<CityModel>(_redisCitiesDatabase.StringGet(key)));
             }
 

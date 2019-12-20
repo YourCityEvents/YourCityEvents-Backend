@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace YourCityEventsApi.Model
 {
@@ -12,8 +14,8 @@ namespace YourCityEventsApi.Model
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         
-        [BsonElement("password")]
-        public string Password { get; set; }
+        /*[BsonElement("password")]
+        public string Password { get; set; }*/
         
         [BsonElement("first_name")]
         public string FirstName { get; set; }
@@ -32,24 +34,22 @@ namespace YourCityEventsApi.Model
         public CityModel City { get; set; }
 
         [BsonElement("hosting_events")]
-        public EventModel[] HostingEvents { get; set; }
+        public BackendEventModel[] HostingEvents { get; set; }
         
         [BsonElement("visiting_events")]
-        public EventModel[] VisitingEvents { get; set; }
+        public BackendEventModel[] VisitingEvents { get; set; }
 
         [BsonElement("image_url")]
         public string ImageUrl { get; set; }
         
-        [BsonElement("token")]
-        public string Token { get; set; }
+        /*[BsonElement("token")]
+        public string Token { get; set; }*/
 
-        public UserModel(string id, string email,string password,string firstName
-            , string lastName, CityModel city,EventModel[] hostingEvents=null
-            , EventModel[] visitingEvents=null, string imageUrl=null,string bio=null
-            ,string token=null)
+        public UserModel(string id, string email,string firstName
+            , string lastName, CityModel city,BackendEventModel[] hostingEvents=null
+            , BackendEventModel[] visitingEvents=null, string imageUrl=null,string bio=null)
         {
             Id = id;
-            Password = password;
             FirstName = firstName;
             LastName = lastName;
             Bio = bio;
@@ -58,9 +58,17 @@ namespace YourCityEventsApi.Model
             HostingEvents = hostingEvents;
             VisitingEvents = visitingEvents;
             ImageUrl = imageUrl;
-            Token = token;
         }
-        
+
+        public static UserModel ConvertToUserModel(BackendUserModel backendUserModel)
+        {
+            var newUser=new UserModel(backendUserModel.Id,backendUserModel.Email
+            ,backendUserModel.FirstName,backendUserModel.LastName,backendUserModel.City);
+            newUser.ImageUrl = backendUserModel.ImageUrl;
+            newUser.Bio = backendUserModel.Bio;
+
+            return newUser;
+        }
         
     }
 }

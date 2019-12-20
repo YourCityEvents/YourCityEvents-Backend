@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 using YourCityEventsApi.Model;
 using YourCityEventsApi.Services;
 
@@ -18,6 +19,10 @@ namespace YourCityEventsApi.Controllers
             _eventService = eventService;
         }
 
+        /// <summary>
+        /// Get all events for all cities
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("all")]
         public ActionResult<ResponseModel<List<EventModel>>> GetAll()
         {
@@ -27,6 +32,10 @@ namespace YourCityEventsApi.Controllers
                 ,  "Unable to get events");
         }
 
+        /// <summary>
+        /// Get relevant events for all cities
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("forAllCities")]
         public ActionResult<ResponseModel<List<EventModel>>> GetAllByCurrentDate()
         {
@@ -36,6 +45,11 @@ namespace YourCityEventsApi.Controllers
                 , "Unable to get events");
         }
         
+        /// <summary>
+        /// Get relevant events for user's city
+        /// </summary>
+        /// <param name="Authorization"></param>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<ResponseModel<List<EventModel>>> GetByCity([FromHeader] string Authorization)
         {
@@ -45,6 +59,11 @@ namespace YourCityEventsApi.Controllers
             return ResponseModel<List<EventModel>>.FormResponse("events", eventList, "Unable to get events");
         }
 
+        /// <summary>
+        /// Get relevant events for specific city
+        /// </summary>
+        /// <param name="cityModel"></param>
+        /// <returns></returns>
         [HttpGet("byCity")]
         public ActionResult<ResponseModel<List<EventModel>>> GetByCity(CityModel cityModel)
         {
@@ -61,6 +80,11 @@ namespace YourCityEventsApi.Controllers
             return ResponseModel<EventModel>.FormResponse("event", Event, "Event not found");
         }
 
+        /// <summary>
+        /// Get visitors for specific event
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}/visitors")]
         public ActionResult<ResponseModel<List<UserModel>>> GetVisitors(string id)
         {
@@ -70,18 +94,33 @@ namespace YourCityEventsApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ResponseModel<EventModel>> Create(EventModel eventModel)
+        public ActionResult<ResponseModel<EventModel>> Create(CreateEventRequest eventModel,[FromHeader] string Authorization)
         {
-            var Event = _eventService.Create(eventModel);
+            string token = Authorization.Split()[1];
+            var Event = _eventService.Create(eventModel,token);
 
             return ResponseModel<EventModel>.FormResponse("event", Event, "Unable to create event");
         }
 
-        [HttpPut("{id}")]
-        public ActionResult<ResponseModel<string>> Update(string id, EventModel eventModel)
+        /*[HttpPut("{id}")]
+        public ActionResult<ResponseModel<string>> Update(string id,[FromBody]EventModel eventModel)
         {
             _eventService.Update(id,eventModel);
 
+            return new ResponseModel<string>(null);
+        }*/
+
+        /// <summary>
+        /// Subscribe on specific event
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="Authorization"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public ActionResult<ResponseModel<string>> SubscribeOnEvent(string id, [FromHeader] string Authorization)
+        {
+            string token = Authorization.Split()[1];
+            _eventService.SubscribeOnEvent(id, token);
             return new ResponseModel<string>(null);
         }
 

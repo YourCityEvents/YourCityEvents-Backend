@@ -1,0 +1,96 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="./swagger-ui.css" >
+    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+    <style>
+        ﻿.swagger-ui .info .title,
+        .swagger-ui a.nostyle,
+        .swagger-ui .parameter__name,
+        .swagger-ui .parameter__type,
+        .swagger-ui .parameter__deprecated,
+        .swagger-ui .parameter__in,
+        .swagger-ui table thead tr th,
+        .swagger-ui .response-col_status,
+        .swagger-ui table thead tr td,
+        .swagger-ui .opblock .opblock-section-header h4,
+        .swagger-ui label,
+        .swagger-ui .tab li,
+        .swagger-ui .opblock .opblock-section-header label,
+        .swagger-ui .btn {
+            color: #CCCCCC;
+        }
+
+        body,
+        .swagger-ui .info .title,
+        .swagger-ui .scheme-container,
+        .swagger-ui select {
+            background-color: #222;
+            color: #CCC;
+        }
+
+        .swagger-ui .opblock .opblock-section-header {
+            background-color: transparent;
+        }
+
+        .swagger-ui .opblock .opblock-summary-description{
+            color:white;
+        }
+
+        .swagger-ui textarea,
+        .swagger-ui input[type=text] {
+            background-color: #41444e;
+            color: #CCC;
+        }
+
+        .swagger-ui .topbar {
+            background-color: #000;
+        }
+    </style>
+
+</head>
+
+<body>
+<div id="swagger-ui"></div>
+
+<!-- Workaround for https://github.com/swagger-api/swagger-editor/issues/1371 -->
+<script>
+    if (window.navigator.userAgent.indexOf("Edge") > -1) {
+        console.log("Removing native Edge fetch in favor of swagger-ui's polyfill")
+        window.fetch = undefined;
+    }
+</script>
+
+<script src="./swagger-ui-bundle.js"> </script>
+<script src="./swagger-ui-standalone-preset.js"> </script>
+<script>
+    window.onload = function() {
+        var configObject = JSON.parse('{"urls":[{"url":"v1/swagger.json","name":"YourCityEventsAPI"}],"deepLinking":false,"displayOperationId":false,"defaultModelsExpandDepth":1,"defaultModelExpandDepth":1,"defaultModelRendering":"example","displayRequestDuration":false,"docExpansion":"list","showExtensions":false,"showCommonExtensions":false,"supportedSubmitMethods":["get","put","post","delete","options","head","patch","trace"],"validatorUrl":null}');
+        var oauthConfigObject = JSON.parse('{"scopeSeperator":" ","useBasicAuthenticationWithAccessCodeGrant":false}');
+
+        // Apply mandatory parameters
+        configObject.dom_id = "#swagger-ui";
+        configObject.presets = [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset];
+        configObject.layout = "StandaloneLayout";
+
+        // If oauth2RedirectUrl isn't specified, use the built-in default
+        if (!configObject.hasOwnProperty("oauth2RedirectUrl"))
+            configObject.oauth2RedirectUrl = window.location.href.replace("index.html", "oauth2-redirect.html").split('#')[0];
+
+        // Begin Swagger UI call region
+
+        const ui = SwaggerUIBundle(configObject);
+
+        ui.initOAuth(oauthConfigObject);
+
+        // End Swagger UI call region
+
+        window.ui = ui
+    }
+</script>
+</body>
+</html>

@@ -26,3 +26,5 @@
 /home/bwnuts/Documents/YourCityEventsApi/YourCityEventsApi/obj/Debug/netcoreapp2.2/YourCityEventsApi.RazorTargetAssemblyInfo.cache
 /home/bwnuts/Documents/YourCityEventsApi/YourCityEventsApi/obj/Debug/netcoreapp2.2/YourCityEventsApi.dll
 /home/bwnuts/Documents/YourCityEventsApi/YourCityEventsApi/obj/Debug/netcoreapp2.2/YourCityEventsApi.pdb
+/home/bwnuts/RiderProjects/YourCityEventsApi/YourCityEventsApi/bin/Debug/netcoreapp2.2/YourCityEventsApi.xml
+/home/bwnuts/RiderProjects/YourCityEventsApi/YourCityEventsApi/obj/Debug/netcoreapp2.2/YourCityEventsApi.xml

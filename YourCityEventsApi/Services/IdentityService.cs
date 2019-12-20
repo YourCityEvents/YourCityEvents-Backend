@@ -3,6 +3,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 using YourCityEventsApi.Model;
 using YourCityEventsApi.Security;
 
@@ -10,14 +13,26 @@ namespace YourCityEventsApi.Services
 {
     public class IdentityService
     {
-
-        private readonly UserService _userService;
+        
+        private IMongoCollection<BackendUserModel> _users;
+        private IDatabase _redisUsersDatabase;
         private readonly string _jwtSecret;
 
-            public IdentityService(IJwtSettings jwtSettings,UserService userService)
+        private readonly ConvertModelsService _convertModelsService;
+
+            public IdentityService(IJwtSettings jwtSettings,IMongoSettings settings
+            ,ConvertModelsService convertModelsService)
         {
-            _userService=userService;
             _jwtSecret = jwtSettings.Secret;
+            
+            var client=new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+            _users = database.GetCollection<BackendUserModel>("Users");
+            
+            var redis = RedisSettings.GetConnectionMultiplexer();
+            _redisUsersDatabase = redis.GetDatabase(0);
+
+            _convertModelsService = convertModelsService;
         }
 
         private AuthenticationResult GenerateAuthenticationResult(UserModel newUser)
@@ -46,7 +61,7 @@ namespace YourCityEventsApi.Services
         public AuthenticationResult Register(string email,string password,string firstName,string lastName
         ,CityModel city)
         {
-            var existing = _userService.GetByEmail(email);
+            var existing = _users.Find(u => u.Email == email).FirstOrDefault();
 
             if (existing != null)
             {
@@ -56,15 +71,19 @@ namespace YourCityEventsApi.Services
                 };
             }
 
-            var newUser = new UserModel(null,email,password,firstName,lastName,city);
+            var newUser = new BackendUserModel(null,email,password,firstName,lastName,city);
 
-            var createdUser = _userService.Create(newUser);
-            return GenerateAuthenticationResult(createdUser);
+            _users.InsertOne(newUser);
+            var user = _users.Find(u => u.Email == newUser.Email).FirstOrDefault();
+            _redisUsersDatabase.StringSet(user.Id, JsonConvert.SerializeObject(user)
+            ,new TimeSpan(0,1,59,59));
+            
+            return GenerateAuthenticationResult(_convertModelsService.GetUserModel(newUser));
         }
 
         public AuthenticationResult Login(string email, string password)
         {
-            var user = _userService.GetByEmail(email);
+            var user = _users.Find(u => u.Email == email).FirstOrDefault();
 
             if (user == null)
             {
@@ -82,7 +101,7 @@ namespace YourCityEventsApi.Services
                 };
             }
             
-            return GenerateAuthenticationResult(user);
+            return GenerateAuthenticationResult(_convertModelsService.GetUserModel(user));
         }
     }
 }

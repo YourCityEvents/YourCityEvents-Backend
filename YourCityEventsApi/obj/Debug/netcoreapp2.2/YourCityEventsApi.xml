@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YourCityEventsApi</name>
+    </assembly>
+    <members>
+        <member name="M:YourCityEventsApi.Controllers.EventController.GetAll">
+            <summary>
+            Get all events for all cities
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.EventController.GetAllByCurrentDate">
+            <summary>
+            Get relevant events for all cities
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.EventController.GetByCity(System.String)">
+            <summary>
+            Get relevant events for user's city
+            </summary>
+            <param name="Authorization"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.EventController.GetByCity(YourCityEventsApi.Model.CityModel)">
+            <summary>
+            Get relevant events for specific city
+            </summary>
+            <param name="cityModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.EventController.GetVisitors(System.String)">
+            <summary>
+            Get visitors for specific event
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.EventController.SubscribeOnEvent(System.String,System.String)">
+            <summary>
+            Subscribe on specific event
+            </summary>
+            <param name="id"></param>
+            <param name="Authorization"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.UserController.Get(System.String)">
+            <summary>
+            Get user by token
+            </summary>
+            <param name="Authorization"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.UserController.GetById(System.String)">
+            <summary>
+            Get user by ID
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.UserController.GetHostingEvents(System.String)">
+            <summary>
+            Get specific user's hosting events
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YourCityEventsApi.Controllers.UserController.GetVisitingEvents(System.String)">
+            <summary>
+             Get specific user's visiting events
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

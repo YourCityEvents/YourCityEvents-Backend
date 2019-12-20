@@ -2,59 +2,61 @@
 <project version="4">
   <component name="ContentModelStore">
     <e p="$USER_HOME$/.Rider2019.2/system/extResources" t="IncludeRecursive" />
-    <e p="$USER_HOME$/.Rider2019.2/system/resharper-host/local/Transient/ReSharperHost/v192/SolutionCaches/_YourCityEventsApi.-233305881.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/.Rider2019.2/system/resharper-host/local/Transient/ReSharperHost/v192/SolutionCaches/_YourCityEventsApi.-1836466397.00" t="ExcludeRecursive" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="YourCityEventsApi" t="IncludeRecursive">
         <e p="Configuration" t="Include">
+          <e p="JwtSettings.cs" t="Include" />
+          <e p="MongoSettings.cs" t="Include" />
           <e p="Program.cs" t="Include" />
+          <e p="RedisSettings.cs" t="Include" />
           <e p="Startup.cs" t="Include" />
+          <e p="SwaggerOptions.cs" t="Include" />
         </e>
         <e p="Controllers" t="Include">
           <e p="CityController.cs" t="Include" />
           <e p="EventController.cs" t="Include" />
+          <e p="IdentityController.cs" t="Include" />
           <e p="UserController.cs" t="Include" />
         </e>
+        <e p="Converters" t="Include">
+          <e p="ConvertEventModel.cs" t="Include" />
+          <e p="ConvertUserModel.cs" t="Include" />
+        </e>
+        <e p="CustomSwagger" t="Include">
+          <e p="index.html" t="Include" />
+        </e>
         <e p="Model" t="Include">
+          <e p="BackendEventModel.cs" t="Include" />
+          <e p="BackendUserModel.cs" t="Include" />
+          <e p="ChangeEmailRequest.cs" t="Include" />
+          <e p="ChangePasswordRequest.cs" t="Include" />
           <e p="CityModel.cs" t="Include" />
-          <e p="DatabaseSettings.cs" t="Include" />
+          <e p="CreateEventRequest.cs" t="Include" />
           <e p="EventModel.cs" t="Include" />
+          <e p="ResponseModel.cs" t="Include" />
+          <e p="UploadImageModel.cs" t="Include" />
           <e p="UserModel.cs" t="Include" />
         </e>
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
         </e>
+        <e p="ScheduleTask" t="Include">
+          <e p="BackgroundService.cs" t="Include" />
+          <e p="ScheduleTaskService.cs" t="Include" />
+          <e p="ScopedService.cs" t="Include" />
+        </e>
         <e p="Security" t="Include">
-          <e p="BaseGatewayResponse.cs" t="Include" />
-          <e p="Error.cs" t="Include" />
-          <e p="Interfaces" t="Include">
-            <e p="IJwtFactory.cs" t="Include" />
-            <e p="IOutputPort.cs" t="Include" />
-            <e p="IUseCaseRequest.cs" t="Include" />
-            <e p="IUseCaseRequestHandler.cs" t="Include" />
-          </e>
-          <e p="TokenModel.cs" t="Include" />
-          <e p="UseCaseRequests" t="Include">
-            <e p="LoginUserRequest.cs" t="Include" />
-            <e p="RegisterUserRequest.cs" t="Include" />
-          </e>
-          <e p="UseCaseResponseMessage.cs" t="Include" />
-          <e p="UseCaseResponses" t="Include">
-            <e p="CreateUserResponse.cs" t="Include" />
-            <e p="LoginUserResponse.cs" t="Include" />
-            <e p="RegisterUserResponse.cs" t="Include" />
-          </e>
-          <e p="UseCases" t="Include">
-            <e p="Interfaces" t="Include">
-              <e p="ILoginUserUseCase.cs" t="Include" />
-              <e p="IRegisterUserUseCase.cs" t="Include" />
-            </e>
-            <e p="LoginUseCase.cs" t="Include" />
-            <e p="RegisterUserUseCase.cs" t="Include" />
-          </e>
+          <e p="AuthenticationResult.cs" t="Include" />
+          <e p="AuthorizationHeaderParameterOperationFilter.cs" t="Include" />
+          <e p="UserLoginRequest.cs" t="Include" />
+          <e p="UserRegistrationRequest.cs" t="Include" />
         </e>
         <e p="Services" t="Include">
           <e p="CityService.cs" t="Include" />
+          <e p="ConvertModelsService.cs" t="Include" />
           <e p="EventService.cs" t="Include" />
+          <e p="IdentityService.cs" t="Include" />
           <e p="UserService.cs" t="Include" />
         </e>
         <e p="YourCityEventsApi.csproj" t="IncludeRecursive" />
@@ -66,6 +68,11 @@
             <e p="netcoreapp2.2" t="Include">
               <e p="YourCityEventsApi.AssemblyInfo.cs" t="Include" />
             </e>
+          </e>
+        </e>
+        <e p="wwwroot" t="Include">
+          <e p="events" t="Include">
+            <e p="5df7dc0d13e1fd11d284cc86.jpg" t="Include" />
           </e>
         </e>
       </e>
